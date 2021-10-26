@@ -12,13 +12,11 @@ import helpers.Attach;
 import static java.lang.String.format;
 
 public class TestBase {
-    static CredentialsConfig credentials = ConfigFactory.create(CredentialsConfig.class);
-    static String loginForSelenoid = credentials.login();
-    static String passwordForSelenoid = credentials.password();
+    public static CredentialsConfig credentials =
+            ConfigFactory.create(CredentialsConfig.class);
 
     @BeforeAll
     static void setup() {
-
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
 
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -26,12 +24,13 @@ public class TestBase {
         capabilities.setCapability("enableVideo", true);
 
         Configuration.browserCapabilities = capabilities;
-        Configuration.baseUrl = "https://demoqa.com";
         Configuration.startMaximized = true;
-        //   Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub/";
+        String username = credentials.username();
+        String password = credentials.password();
+        Configuration.baseUrl = "https://demoqa.com";
+        String url = System.getProperty("remoteUrl", "selenoid.autotests.cloud/wd/hub/");
+        Configuration.remote = String.format("https://%s:%s@%s", username, password, url);
 
-        Configuration.remote =
-                format("https://%s:%s@%s", loginForSelenoid, passwordForSelenoid, System.getProperty("remoteUrl"));
     }
 
     @AfterEach
