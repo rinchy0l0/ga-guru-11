@@ -9,12 +9,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import helpers.Attach;
-
+import static java.lang.String.format;
 
 public class TestBase {
-
-    public static CredentialsConfig credentials =
-            ConfigFactory.create(CredentialsConfig.class);
+    static CredentialsConfig credentials = ConfigFactory.create(CredentialsConfig.class);
+    static String loginForSelenoid = credentials.login();
+    static String passwordForSelenoid = credentials.password();
 
     @BeforeAll
     static void setup() {
@@ -30,11 +30,8 @@ public class TestBase {
         Configuration.startMaximized = true;
         //   Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub/";
 
-        String url = System.getProperty("url");
-        String login = credentials.login();
-        String password = credentials.password();
-        String remote = "https://" + login + ":" + password + "@" + url;
-        Configuration.remote = remote;
+        Configuration.remote =
+                format("https://%s:%s@%s", loginForSelenoid, passwordForSelenoid, System.getProperty("remoteUrl"));
     }
 
     @AfterEach
