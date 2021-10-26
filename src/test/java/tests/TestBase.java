@@ -12,7 +12,7 @@ import helpers.Attach;
 import static java.lang.String.format;
 
 public class TestBase {
-    public static CredentialsConfig credentials = ConfigFactory.create(CredentialsConfig.class);
+   // public static CredentialsConfig credentials = ConfigFactory.create(CredentialsConfig.class);
 
     @BeforeAll
     static void beforeAll() {
@@ -23,14 +23,14 @@ public class TestBase {
         capabilities.setCapability("enableVNC", true);
         capabilities.setCapability("enableVideo", true);
 
-        String username = credentials.username();
-        String password = credentials.password();
-        String browserAddress = System.getProperty("address", "selenoid.autotests.cloud/wd/hub/");
-
+       // String username = credentials.username();
+       // String password = credentials.password();
+       // String browserAddress = System.getProperty("address", "selenoid.autotests.cloud/wd/hub/");
+        Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub/";
         Configuration.browserCapabilities = capabilities;
         Configuration.startMaximized = true;
-        String selenoidURL = format("https://%s:%s@%s", username, password, browserAddress);
-        Configuration.remote = selenoidURL;
+       // String selenoidURL = format("https://%s:%s@%s", username, password, browserAddress);
+       // Configuration.remote = selenoidURL;
         Configuration.baseUrl = "https://demoqa.com";
     }
 
