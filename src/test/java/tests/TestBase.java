@@ -30,7 +30,6 @@ public class TestBase {
         Configuration.startMaximized = true;
         Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub/";
 
-
         String url = System.getProperty("url");
 
         String login = credentials.login();
