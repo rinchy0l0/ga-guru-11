@@ -12,26 +12,28 @@ import helpers.Attach;
 import static java.lang.String.format;
 
 public class TestBase {
-    public static CredentialsConfig credentials =
-            ConfigFactory.create(CredentialsConfig.class);
+    public static CredentialsConfig credentials = ConfigFactory.create(CredentialsConfig.class);
 
     @BeforeAll
-    static void setup() {
+    static void beforeAll() {
+
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
 
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("enableVNC", true);
         capabilities.setCapability("enableVideo", true);
 
-        Configuration.browserCapabilities = capabilities;
-        Configuration.startMaximized = true;
         String username = credentials.username();
         String password = credentials.password();
-        Configuration.baseUrl = "https://demoqa.com";
-        String url = System.getProperty("remoteUrl", "selenoid.autotests.cloud/wd/hub/");
-        Configuration.remote = String.format("https://%s:%s@%s", username, password, url);
+        String browserAddress = System.getProperty("address", "selenoid.autotests.cloud/wd/hub/");
 
+        Configuration.browserCapabilities = capabilities;
+        Configuration.startMaximized = true;
+        String selenoidURL = format("https://%s:%s@%s", username, password, browserAddress);
+        Configuration.remote = selenoidURL;
+        Configuration.baseUrl = "https://demoqa.com";
     }
+
 
     @AfterEach
     public void tearDown() {
