@@ -3,6 +3,7 @@ package tests;
 import com.codeborne.selenide.Configuration;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import pages.RegistrationPage;
 
@@ -19,14 +20,13 @@ import static tests.TestData.state;
 import static tests.TestData.city;
 
 public class RegistrationWithPageObjectsTests extends TestBase {
-
     Faker faker = new Faker();
     String firstName = faker.name().firstName();
     String lastName = faker.name().lastName();
     String email = faker.internet().emailAddress();
 
     RegistrationPage registrationPage = new RegistrationPage();
-
+    @Tag("RegistrationForm")
     @Test
     void successfulRegistrationTest() {
 

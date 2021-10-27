@@ -7,14 +7,15 @@ repositories {
     mavenCentral()
 }
 
-def allureVersion = "2.14.0",
-    selenideVersion = "5.24.0",
+def allureVersion = "2.15.0",
+    selenideVersion = "5.24.2",
     junitVersion = "5.8.1"
 
 allure {
     version = allureVersion
     autoconfigure = true
     aspectjweaver = true
+    aspectjVersion = "1.9.6"
     configuration = "testImplementation"
     useJUnit5 {
         version = allureVersion
@@ -22,33 +23,58 @@ allure {
 }
 
 dependencies {
-    testImplementation( "org.aspectj:aspectjweaver:1.9.6",
-            "com.codeborne:selenide:5.24.0",
+    testImplementation(
+            "org.aspectj:aspectjweaver:1.9.6",
+            "com.codeborne:selenide:$selenideVersion",
             "io.qameta.allure:allure-selenide:$allureVersion",
-            "org.junit.jupiter:junit-jupiter:5.7.1",
+            "com.github.javafaker:javafaker:1.0.2",
             "org.aeonbits.owner:owner:1.0.12",
-            "com.github.javafaker:javafaker:1.0.2")
-    testRuntimeOnly(    "org.slf4j:slf4j-simple:1.7.29",
-            "org.junit.jupiter:junit-jupiter-engine:5.7.1")
+            "org.junit.jupiter:junit-jupiter:$junitVersion")
+    testRuntimeOnly(
+            "org.slf4j:slf4j-simple:1.7.29",
+            "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }
 
-tasks.withType(JavaCompile) {
+compileTestJava {
+    options.encoding = 'UTF-8'
+}
+
+compileJava {
     options.encoding = 'UTF-8'
 }
 
 tasks.withType(Test) {
+//    systemProperty("environment", System.getProperty("environment", "stage")) // preprod, prod
 
     systemProperties(System.getProperties())
     useJUnitPlatform()
 
     testLogging {
         lifecycle {
-//            events "started", "failed"
             events "started", "skipped", "failed", "standard_error", "standard_out"
             exceptionFormat "short"
         }
     }
 }
-test {
-    useJUnitPlatform()
+
+task properties_tests(type: Test) {
+    systemProperty("browserSize", System.getProperty("browserSize", "400x400"))
+    useJUnitPlatform {
+        includeTags "properties"
+    }
 }
+
+task many_tags_tests(type: Test) {
+    useJUnitPlatform {
+        includeTags "properties"
+        includeTags "smoke"
+        excludeTags "prod"
+    }
+}
+
+task registration_form_test(type: Test) {
+    useJUnitPlatform {
+        includeTags "RegistrationForm"
+    }
+}
+
